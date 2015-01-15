@@ -1,17 +1,30 @@
 var mongoose = require('mongoose');
+var crypto = require('crypto');
+
 
 var urlSchema = mongoose.Schema({
   title: String,
   url: String,
   base_url: String,
   code: String,
-  visits: Number
+  visits: { type: Number }
 });
 
-urlSchema.method.createCode = function() {
+urlSchema.methods.createCode = function(next) {
   var shasum = crypto.createHash('sha1');
-  this.url = shasum;
-  this.code = shasum.digest('hex').slice(0, 5);
+  console.log('shasum is: ' + shasum);
+  shasum.update(this.get('url'));
+  this.set('code', shasum.digest('hex').slice(0, 5));
+  next();
 };
 
-exports.Url = mongoose.model('Url', urlSchema);
+urlSchema.pre('save', function(next) {
+  if (!this.get('visits')) {
+    this.set('visits',0);
+  }
+  this.createCode(next);
+});
+
+var Url = mongoose.model('Url', urlSchema);
+
+module.exports = Url;

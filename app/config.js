@@ -9,6 +9,7 @@ var db = Bookshelf.initialize({
     password: 'password',
     database: 'shortlydb',
     charset: 'utf8',
+    // port: '27017',
     filename: path.join(__dirname, '../db/shortly.sqlite')
   }
 });

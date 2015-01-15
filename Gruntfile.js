@@ -3,6 +3,15 @@ module.exports = function(grunt) {
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
     concat: {
+      options: {
+        separator: ';',
+        banner: '/*! <%= pkg.name %> - v<%= pkg.version %> - ' +
+        '<%= grunt.template.today("yyyy-mm-dd") %> */',
+      },
+      dist: {
+        src: __dirname+'/public/client/*.js',
+        dest: __dirname +'/dist/concat.js'
+      }
     },
 
     mochaTest: {
@@ -21,11 +30,21 @@ module.exports = function(grunt) {
     },
 
     uglify: {
+      options: {
+        banner: '/*! <%= pkg.name %> <%= grunt.template.today("dd-mm-yyyy") %> */\n'
+
+      },
+      dist: {
+        files: {
+           'dist/<%= pkg.name %>.min.js': ['<%= concat.dist.dest %>']
+        }
+      }
     },
 
     jshint: {
       files: [
         // Add filespec list here
+        'Gruntfile.js', __dirname+'/public/client/*.js', 'test/**/*.js'
       ],
       options: {
         force: 'true',
@@ -38,6 +57,11 @@ module.exports = function(grunt) {
     },
 
     cssmin: {
+      target: {
+        files: {
+          'output.css': [__dirname+'/public/style.css']
+        }
+      }
     },
 
     watch: {
@@ -105,8 +129,10 @@ module.exports = function(grunt) {
   });
 
   grunt.registerTask('deploy', [
-    // add your deploy tasks here
-  ]);
+    'concat',
+    'uglify',
+    'cssmin'
+]);
 
 
 };

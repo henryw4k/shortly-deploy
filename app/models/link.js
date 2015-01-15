@@ -1,21 +1,17 @@
-// var db = require('../config');
+var mongoose = require('mongoose');
 
+var urlSchema = mongoose.Schema({
+  title: String,
+  url: String,
+  base_url: String,
+  code: String,
+  visits: Number
+});
 
-// var Link = db.Model.extend({
-//   tableName: 'urls',
-//   hasTimestamps: true,
-//   defaults: {
-//     visits: 0
-//   },
-//   initialize: function(){
-//     this.on('creating', function(model, attrs, options){
+var Url = mongoose.model('Url', urlSchema);
 
-//       var crypto = require('crypto');
-//       var shasum = crypto.createHash('sha1');
-//       shasum.update(model.get('url'));
-//       model.set('code', shasum.digest('hex').slice(0, 5));
-//     });
-//   }
-// });
-
-// module.exports = Link;
+urlSchema.method.createCode = function() {
+  var shasum = crypto.createHash('sha1');
+  this.url = shasum;
+  this.code = shasum.digest('hex').slice(0, 5);
+};

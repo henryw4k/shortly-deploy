@@ -7,8 +7,6 @@ var usersSchema = new mongoose.Schema({
   salt: String
 });
 
-exports.User = mongoose.model('User', usersSchema);
-
 usersSchema.methods.comparePassword = function(attemptedPassword, callback) {
   bcrypt.compare(attemptedPassword, this.password, function(err, isMatch) {
     callback(isMatch);
@@ -23,3 +21,12 @@ usersSchema.methods.hashPassword = function(){
     });
   });
 };
+
+module.exports = mongoose.model('User', usersSchema);
+
+// var newUser = new User({username: 'a', password: '123', salt: 'salt'});
+// newUser.save(function(err, user) {
+//   if (err) { console.log(err) }
+//     else { console.log('saved!') }
+
+// })

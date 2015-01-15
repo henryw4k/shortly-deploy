@@ -8,10 +8,10 @@ var urlSchema = mongoose.Schema({
   visits: Number
 });
 
-var Url = mongoose.model('Url', urlSchema);
-
 urlSchema.method.createCode = function() {
   var shasum = crypto.createHash('sha1');
   this.url = shasum;
   this.code = shasum.digest('hex').slice(0, 5);
 };
+
+exports.Url = mongoose.model('Url', urlSchema);
